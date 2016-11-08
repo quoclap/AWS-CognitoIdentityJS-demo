@@ -76,6 +76,10 @@ var CognitoUserPool = AmazonCognitoIdentity.CognitoUserPool;
 // //====================================================================================================
 
 //Use case 4. Authenticating a user and establishing a user session with the Amazon Cognito Identity service.
+
+
+
+
 var authenticationData = {
     Username : config.username,
     Password : config.password,
@@ -95,18 +99,27 @@ cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function (result) {
         console.log('access token + ' + result.getAccessToken().getJwtToken());
 
-        // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        //     IdentityPoolId : config.IdentityPoolId, // your identity pool id here
-        //     Logins : {
-        //         // Change the key below according to the specific region your user pool is in.
-        //         'cognito-idp.' + config.region + '.amazonaws.com/' + config.userPoolId : result.getIdToken().getJwtToken()
-        //     }
-        // });
-        //
-        // // Instantiate aws sdk service objects now that the credentials have been updated.
-        // // example: var s3 = new AWS.S3();
-        // dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+        AWS.config.region = 'us-east-1'; // Region
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId : config.IdentityPoolId,
+            Logins:{
+              'cognito-idp.us-east-1.amazonaws.com/us-east-1_VeoguFTId' : result.getIdToken().getJwtToken()
+            }
+        });
 
+        // Instantiate aws sdk service objects now that the credentials have been updated.
+        // example: var s3 = new AWS.S3();
+        dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10',region:'us-east-1'});
+        var params = {
+          TableName: 'BBB01Raw'
+        };
+        dynamodb.describeTable(params, function(err, data) {
+          if (err){
+            console.log(err, err.stack); // an error occurred
+          }else{
+            console.log(data);           // successful response
+          }
+        });
     },
 
     onFailure: function(err) {

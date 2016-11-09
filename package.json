@@ -5,7 +5,8 @@
     "webpack": "^1.13.3"
   },
   "dependencies": {
-    "amazon-cognito-identity-js": "^1.7.0"
+    "amazon-cognito-identity-js": "^1.7.0",
+    "chart.js": "^2.3.0"
   },
   "scripts": {
     "build": "webpack"

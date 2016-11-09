@@ -1,5 +1,6 @@
 console.log("Hello from entry.js");
-var Chart = require('../node_modules/chart.js/dist/chart.js');
+var Chart = require('../node_modules/chart.js/dist/Chart.bundle.js');
+// var Chart = require('../node_modules/chart.js/dist/chart.js');
 //Lay thong so ngay thang
 //Generating a string of the last X hours back
 var ts = new Date().getTime();
@@ -141,43 +142,107 @@ function listData(data){
   var recentEventsDateTime = [];
   var recentEventsCounter = [];
   var codData = [];
+  var bodData = [];
+  var doData = [];
+  var phData = [];
   var dateHour;
   var cod;
   data.Items.forEach(function(item) {
       dateHour = JSON.stringify(item.Time.S);
       //cod = JSON.stringify(item.COD.N);
       //console.log("COD:" + cod);
-      recentEventsDateTime.push(dateHour.slice(0, -6));
+      recentEventsDateTime.push(dateHour.slice(1, -4));
       //recentEventsCounter.push(item.EventCount.toString());
       codData.push(item.payload.M.COD.N);
+      bodData.push(item.payload.M.BOD.N);
+      doData.push(item.payload.M.DO.N);
+      phData.push(item.payload.M.pH.N);
 
     });
     //Chart.js code
-     var ctx = document.getElementById("myChart").getContext("2d");
-      var myChart = new Chart(ctx, {
-          type: 'bar',
+    //Create random values
+    var randomScalingFactor = function() {
+        return Math.round(Math.random() * 100 * (Math.random() > 0.5 ? -1 : 1));
+    };
+    var randomColorFactor = function() {
+        return Math.round(Math.random() * 255);
+    };
+    var randomColor = function(opacity) {
+        return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
+    };
+
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var background = randomColor(0.5);
+    var myChart = new Chart(ctx, {
+          type: 'line',
           data: {
             labels: recentEventsDateTime,
-            datasets : [{
-            label: "COD",
-            fillColor : "rgba(151,187,205,0.2)",
-            strokeColor : "rgba(151,187,205,1)",
-            pointColor : "rgba(151,187,205,1)",
-            pointStrokeColor : "#fff",
-            pointHighlightFill : "#fff",
-            pointHighlightStroke : "rgba(151,187,205,1)",
-            //data : recentEventsCounter
-            data:codData
+            datasets: [{
+                label: "COD",
+                data:codData,
+                // backgroundColor = "rgba(255,0,0,0.3)",
+                fill: true,
+                //borderDash: [5, 5],
+            }, {
+                label: "BOD",
+                data: bodData,
+                fill: false,
+                borderDash: [5, 5],
+            }, {
+                label: "DO",
+                data: doData,
+                //lineTension: 0,
+                fill: false,
+            }, {
+                label: "pH",
+                data: phData,
+                fill: false,
             }]
-          },
+        },
+          //   datasets : [{
+          //     label: 'COD',
+          //     backgroundColor = background,
+          //     borderColor = randomColor(0.6),
+          //     pointBorderColor = randomColor(0.2),
+          //     pointBackgroundColor = randomColor(0.3),
+          //     pointBorderWidth = 1,
+          //     fill: true,
+          //     data:codData
+          //   },
+          //   {
+          //     label: "BOD",
+          //     data:bodData,
+          //     // backgroundColor = randomColor(0.5),
+          //     // borderColor = randomColor(0.6),
+          //     // pointBorderColor = randomColor(0.2),
+          //     // pointBackgroundColor = randomColor(0.3),
+          //     pointBorderWidth = 1,
+          //     fill: true,
+          //   }]
+          // },
           options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero:true
-                            }
-                        }]
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time'
                     }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    }
+                }]
+            },
+            title: {
+                display: true,
+                text: 'Multi parameters Online monitoring System.'
+            }
           }
       });
+
 }

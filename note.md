@@ -4,8 +4,8 @@
       {
       "private": true
       }
-  - > npm install --save-dev webpack json-loader
-    > npm install --save amazon-cognito-identity-js
+  -  npm install --save-dev webpack json-loader
+     npm install --save amazon-cognito-identity-js
   After commands above, the pakage.json is updated with dependencies.
   - create webpack.seting.js
   - add to pakage.json:
@@ -23,4 +23,3 @@
   - In Federated Identity
     + Create Identity pool
     + In Authentication Provider add a Amazon Provider using UserPoolId and AppClientId are created above.
-    

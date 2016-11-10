@@ -120,8 +120,11 @@ cognitoUser.authenticateUser(authenticationDetails, {
       // Instantiate aws sdk service objects now that the credentials have been updated.
       var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10',region:'us-east-1'});
       var params = {
-        TableName: config.tableName
+        TableName: config.tableName,
+        ReturnConsumedCapacity: 'TOTAL'
+        //Limit: 15
       };
+      //scan all the table
       dynamodb.scan(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
         else{
@@ -129,8 +132,60 @@ cognitoUser.authenticateUser(authenticationDetails, {
           listData(data);
         }
       });
-      // //Query DynamoDB using the new documentClient
-      // var docClient = new AWS.DynamoDB.DocumentClient();
+      //Test scan using filter
+
+      var params = {
+          TableName: 'table_name',
+          IndexName: 'index_name', // optional (if querying an index)
+          KeyConditions: { // indexed attributes to query
+                           // must include the hash key value of the table or index
+                           // with 'EQ' operator
+              attribute_name: {
+                  ComparisonOperator: 'EQ', // (EQ | NE | IN | LE | LT | GE | GT | BETWEEN |
+                                            //  NOT_NULL | NULL | CONTAINS | NOT_CONTAINS | BEGINS_WITH)
+                  AttributeValueList: [ { S: 'STRING_VALUE' }, ],
+              },
+              // more key conditions ...
+          },
+          ScanIndexForward: true, // optional (true | false) defines direction of Query in the index
+          Limit: 0, // optional (limit the number of items to evaluate)
+          ConsistentRead: false, // optional (true | false)
+          Select: 'ALL_ATTRIBUTES', // optional (ALL_ATTRIBUTES | ALL_PROJECTED_ATTRIBUTES |
+                                    //           SPECIFIC_ATTRIBUTES | COUNT)
+          AttributesToGet: [ // optional (list of specific attribute names to return)
+              'attribute_name',
+              // ... more attributes ...
+          ],
+          ExclusiveStartKey: { // optional (for pagination, returned by prior calls as LastEvaluatedKey)
+              attribute_name: { S: 'STRING_VALUE' },
+              // anotherKey: ...
+
+          },
+          ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+      };
+      dynamodb.query(params, function(err, data) {
+          if (err) console.log(err); // an error occurred
+          else console.log(data); // successful response
+      });
+
+      //test GetItem
+      // var params = {
+      //   TableName: config.tableName,
+      //   Key: { // a map of attribute name to AttributeValue for all primary key attributes
+      //     attribute_name: { S: 'STRING_VALUE' }
+      //     // more attributes...
+      //   },
+      //   AttributesToGet: [ // optional (list of specific attribute names to return)
+      //     'attribute_name',
+      //     // ... more attribute names ...
+      //   ],
+      //   ConsistentRead: false, // optional (true | false)
+      //   ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+      // };
+      // dynamodb.getItem(params, function(err, data) {
+      //   if (err) console.log(err); // an error occurred
+      //   else console.log(data); // successful response
+      // });
     },
     onFailure: function(err) {
         alert(err);
@@ -149,10 +204,7 @@ function listData(data){
   var cod;
   data.Items.forEach(function(item) {
       dateHour = JSON.stringify(item.Time.S);
-      //cod = JSON.stringify(item.COD.N);
-      //console.log("COD:" + cod);
       recentEventsDateTime.push(dateHour.slice(1, -4));
-      //recentEventsCounter.push(item.EventCount.toString());
       codData.push(item.payload.M.COD.N);
       bodData.push(item.payload.M.BOD.N);
       doData.push(item.payload.M.DO.N);

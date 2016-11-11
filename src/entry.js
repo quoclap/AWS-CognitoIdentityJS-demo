@@ -1,4 +1,4 @@
-console.log("Hello from entry.js");
+ console.log("Hello from entry.js");
 var Chart = require('../node_modules/chart.js/dist/Chart.bundle.js');
 // var Chart = require('../node_modules/chart.js/dist/chart.js');
 //Lay thong so ngay thang
@@ -133,40 +133,171 @@ cognitoUser.authenticateUser(authenticationDetails, {
         }
       });
       //Test scan using filter
+//
+//       var params = {
+//         TableName: config.tableName, /* required */
+//         IndexName: 'Time-index',
+//         // AttributesToGet: [
+//         //   'Time',
+//         //   /* more items */
+//         // ],
+//         // ConditionalOperator: 'AND | OR',
+//         ConsistentRead: false,
+//         ExpressionAttributeNames: {
+// //****          someKey: 'STRING_VALUE',
+//           /* anotherKey: ... */
+//         },
+//         ExpressionAttributeValues: {
+//           someKey: { /* AttributeValue */
+//             B: new Buffer('...') || 'STRING_VALUE',
+//             BOOL: true || false,
+//             BS: [
+//               new Buffer('...') || 'STRING_VALUE',
+//               /* more items */
+//             ],
+//             L: [
+//               /* recursive AttributeValue */,
+//               /* more items */
+//             ],
+//             M: {
+//               someKey: /* recursive AttributeValue */,
+//               /* anotherKey: ... */
+//             },
+//             N: 'STRING_VALUE',
+//             NS: [
+//               'STRING_VALUE',
+//               /* more items */
+//             ],
+//             NULL: true || false,
+//             S: 'STRING_VALUE',
+//             SS: [
+//               'STRING_VALUE',
+//               /* more items */
+//             ]
+//           },
+//           /* anotherKey: ... */
+//         },
+//         FilterExpression: "#Time = :time",
+//         KeyConditionExpression: 'STRING_VALUE',
+//         // KeyConditions: {
+//         //   someKey: {
+//         //     ComparisonOperator: 'CONTAINS', /* required */
+//         //     AttributeValueList: [
+//         //       { /* AttributeValue */
+//         //         // B: new Buffer('...') || 'STRING_VALUE',
+//         //         // BOOL: true || false,
+//         //         // BS: [
+//         //         //   new Buffer('...') || 'STRING_VALUE',
+//         //         //   /* more items */
+//         //         // ],
+//         //         // L: [
+//         //         //   /* recursive AttributeValue */,
+//         //         //   /* more items */
+//         //         // ],
+//         //         // M: {
+//         //         //   someKey: /* recursive AttributeValue */,
+//         //         //   /* anotherKey: ... */
+//         //         // },
+//         //         // N: 'STRING_VALUE',
+//         //         // NS: [
+//         //         //   'STRING_VALUE',
+//         //         //   /* more items */
+//         //         // ],
+//         //         // NULL: true || false,
+//         //         S: '2016-11-09T12:15:12',
+//         //         // SS: [
+//         //         //   'STRING_VALUE',
+//         //           /* more items */
+//         //         ]
+//         //       },
+//         //       /* more items */
+//         //     ]
+//         //   },
+//         //   /* anotherKey: ... */
+//         // },
+//         Limit: 10,
+//         ProjectionExpression: 'payload',
+//         // QueryFilter: {
+//         //   someKey: {
+//         //     ComparisonOperator: 'EQ | NE | IN | LE | LT | GE | GT | BETWEEN | NOT_NULL | NULL | CONTAINS | NOT_CONTAINS | BEGINS_WITH', /* required */
+//         //     AttributeValueList: [
+//         //       { /* AttributeValue */
+//         //         B: new Buffer('...') || 'STRING_VALUE',
+//         //         BOOL: true || false,
+//         //         BS: [
+//         //           new Buffer('...') || 'STRING_VALUE',
+//         //           /* more items */
+//         //         ],
+//         //         L: [
+//         //           /* recursive AttributeValue */,
+//         //           /* more items */
+//         //         ],
+//         //         M: {
+//         //           someKey: /* recursive AttributeValue */,
+//         //           /* anotherKey: ... */
+//         //         },
+//         //         N: 'STRING_VALUE',
+//         //         NS: [
+//         //           'STRING_VALUE',
+//         //           /* more items */
+//         //         ],
+//         //         NULL: true || false,
+//         //         S: 'STRING_VALUE',
+//         //         SS: [
+//         //           'STRING_VALUE',
+//         //           /* more items */
+//         //         ]
+//         //       },
+//         //       /* more items */
+//         //     ]
+//         //   },
+//         //   /* anotherKey: ... */
+//         // },
+//         ReturnConsumedCapacity: 'TOTAL',
+//         ScanIndexForward: true,
+//         //Use
+//         //Select: 'ALL_ATTRIBUTES'
+//       };
 
       var params = {
-          TableName: 'table_name',
-          IndexName: 'index_name', // optional (if querying an index)
-          KeyConditions: { // indexed attributes to query
-                           // must include the hash key value of the table or index
-                           // with 'EQ' operator
-              attribute_name: {
-                  ComparisonOperator: 'EQ', // (EQ | NE | IN | LE | LT | GE | GT | BETWEEN |
-                                            //  NOT_NULL | NULL | CONTAINS | NOT_CONTAINS | BEGINS_WITH)
-                  AttributeValueList: [ { S: 'STRING_VALUE' }, ],
-              },
-              // more key conditions ...
-          },
-          ScanIndexForward: true, // optional (true | false) defines direction of Query in the index
-          Limit: 0, // optional (limit the number of items to evaluate)
-          ConsistentRead: false, // optional (true | false)
-          Select: 'ALL_ATTRIBUTES', // optional (ALL_ATTRIBUTES | ALL_PROJECTED_ATTRIBUTES |
-                                    //           SPECIFIC_ATTRIBUTES | COUNT)
-          AttributesToGet: [ // optional (list of specific attribute names to return)
-              'attribute_name',
-              // ... more attributes ...
-          ],
-          ExclusiveStartKey: { // optional (for pagination, returned by prior calls as LastEvaluatedKey)
-              attribute_name: { S: 'STRING_VALUE' },
-              // anotherKey: ...
-
-          },
-          ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+          TableName: "BBB02Raw",
+          ProjectionExpression: "payload",
+          KeyConditionExpression: "#Time = :time1",
+          ExpressionAttributeNames:{"#Time" : "Time"},
+          ExpressionAttributeValues: {
+              ":time1": {"S":"1478855969936"}
+          }
       };
+
       dynamodb.query(params, function(err, data) {
-          if (err) console.log(err); // an error occurred
-          else console.log(data); // successful response
+        if (err) console.log(err, err.stack); // an error occurred
+        else     console.log(JSON.stringify(data));           // successful response
       });
+
+
+      // var params = {
+      //     TableName : "Music",
+      //     KeySchema: [
+      //         { AttributeName: "Artist", KeyType: "HASH" },  //Partition key
+      //         { AttributeName: "SongTitle", KeyType: "RANGE" }  //Sort key
+      //     ],
+      //     AttributeDefinitions: [
+      //         { AttributeName: "Artist", AttributeType: "S" },
+      //         { AttributeName: "SongTitle", AttributeType: "S" }
+      //     ],
+      //     ProvisionedThroughput: {
+      //         ReadCapacityUnits: 1,
+      //         WriteCapacityUnits: 1
+      //     }
+      // };
+      //
+      // dynamodb.createTable(params, function(err, data) {
+      //     if (err)
+      //         console.log(JSON.stringify(err, null, 2));
+      //     else
+      //         console.log(JSON.stringify(data, null, 2));
+      // });
+
 
       //test GetItem
       // var params = {
@@ -176,11 +307,11 @@ cognitoUser.authenticateUser(authenticationDetails, {
       //     // more attributes...
       //   },
       //   AttributesToGet: [ // optional (list of specific attribute names to return)
-      //     'attribute_name',
+      //     'payload',
       //     // ... more attribute names ...
       //   ],
       //   ConsistentRead: false, // optional (true | false)
-      //   ReturnConsumedCapacity: 'NONE', // optional (NONE | TOTAL | INDEXES)
+      //   ReturnConsumedCapacity: 'TOTAL', // optional (NONE | TOTAL | INDEXES)
       // };
       // dynamodb.getItem(params, function(err, data) {
       //   if (err) console.log(err); // an error occurred

@@ -6,6 +6,7 @@
       }
   -  npm install --save-dev webpack json-loader
      npm install --save amazon-cognito-identity-js
+     npm install dynamodb-doc --save
   After commands above, the pakage.json is updated with dependencies.
   - create webpack.seting.js
   - add to pakage.json:

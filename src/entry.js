@@ -1,5 +1,7 @@
- console.log("Hello from entry.js");
+console.log("Hello from entry.js");
 var Chart = require('../node_modules/chart.js/dist/Chart.bundle.js');
+var AWS = require('aws-sdk');
+var DOC = require('dynamodb-doc');
 // var Chart = require('../node_modules/chart.js/dist/chart.js');
 //Lay thong so ngay thang
 //Generating a string of the last X hours back
@@ -108,7 +110,7 @@ var userData = {
 var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
 cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function (result) {
-      console.log('access token + ' + result.getAccessToken().getJwtToken());
+      // /console.log('access token + ' + result.getAccessToken().getJwtToken());
       AWS.config.region = 'us-east-1'; // Region
       AWS.config.credentials = new AWS.CognitoIdentityCredentials({
           IdentityPoolId : config.IdentityPoolId,
@@ -128,144 +130,25 @@ cognitoUser.authenticateUser(authenticationDetails, {
       dynamodb.scan(params, function(err, data) {
         if (err) console.log(err, err.stack); // an error occurred
         else{
-          console.log("Data: " + JSON.stringify(data));
+          //console.log("Data: " + JSON.stringify(data));
           listData(data);
         }
       });
-      //Test scan using filter
-//
-//       var params = {
-//         TableName: config.tableName, /* required */
-//         IndexName: 'Time-index',
-//         // AttributesToGet: [
-//         //   'Time',
-//         //   /* more items */
-//         // ],
-//         // ConditionalOperator: 'AND | OR',
-//         ConsistentRead: false,
-//         ExpressionAttributeNames: {
-// //****          someKey: 'STRING_VALUE',
-//           /* anotherKey: ... */
-//         },
-//         ExpressionAttributeValues: {
-//           someKey: { /* AttributeValue */
-//             B: new Buffer('...') || 'STRING_VALUE',
-//             BOOL: true || false,
-//             BS: [
-//               new Buffer('...') || 'STRING_VALUE',
-//               /* more items */
-//             ],
-//             L: [
-//               /* recursive AttributeValue */,
-//               /* more items */
-//             ],
-//             M: {
-//               someKey: /* recursive AttributeValue */,
-//               /* anotherKey: ... */
-//             },
-//             N: 'STRING_VALUE',
-//             NS: [
-//               'STRING_VALUE',
-//               /* more items */
-//             ],
-//             NULL: true || false,
-//             S: 'STRING_VALUE',
-//             SS: [
-//               'STRING_VALUE',
-//               /* more items */
-//             ]
-//           },
-//           /* anotherKey: ... */
-//         },
-//         FilterExpression: "#Time = :time",
-//         KeyConditionExpression: 'STRING_VALUE',
-//         // KeyConditions: {
-//         //   someKey: {
-//         //     ComparisonOperator: 'CONTAINS', /* required */
-//         //     AttributeValueList: [
-//         //       { /* AttributeValue */
-//         //         // B: new Buffer('...') || 'STRING_VALUE',
-//         //         // BOOL: true || false,
-//         //         // BS: [
-//         //         //   new Buffer('...') || 'STRING_VALUE',
-//         //         //   /* more items */
-//         //         // ],
-//         //         // L: [
-//         //         //   /* recursive AttributeValue */,
-//         //         //   /* more items */
-//         //         // ],
-//         //         // M: {
-//         //         //   someKey: /* recursive AttributeValue */,
-//         //         //   /* anotherKey: ... */
-//         //         // },
-//         //         // N: 'STRING_VALUE',
-//         //         // NS: [
-//         //         //   'STRING_VALUE',
-//         //         //   /* more items */
-//         //         // ],
-//         //         // NULL: true || false,
-//         //         S: '2016-11-09T12:15:12',
-//         //         // SS: [
-//         //         //   'STRING_VALUE',
-//         //           /* more items */
-//         //         ]
-//         //       },
-//         //       /* more items */
-//         //     ]
-//         //   },
-//         //   /* anotherKey: ... */
-//         // },
-//         Limit: 10,
-//         ProjectionExpression: 'payload',
-//         // QueryFilter: {
-//         //   someKey: {
-//         //     ComparisonOperator: 'EQ | NE | IN | LE | LT | GE | GT | BETWEEN | NOT_NULL | NULL | CONTAINS | NOT_CONTAINS | BEGINS_WITH', /* required */
-//         //     AttributeValueList: [
-//         //       { /* AttributeValue */
-//         //         B: new Buffer('...') || 'STRING_VALUE',
-//         //         BOOL: true || false,
-//         //         BS: [
-//         //           new Buffer('...') || 'STRING_VALUE',
-//         //           /* more items */
-//         //         ],
-//         //         L: [
-//         //           /* recursive AttributeValue */,
-//         //           /* more items */
-//         //         ],
-//         //         M: {
-//         //           someKey: /* recursive AttributeValue */,
-//         //           /* anotherKey: ... */
-//         //         },
-//         //         N: 'STRING_VALUE',
-//         //         NS: [
-//         //           'STRING_VALUE',
-//         //           /* more items */
-//         //         ],
-//         //         NULL: true || false,
-//         //         S: 'STRING_VALUE',
-//         //         SS: [
-//         //           'STRING_VALUE',
-//         //           /* more items */
-//         //         ]
-//         //       },
-//         //       /* more items */
-//         //     ]
-//         //   },
-//         //   /* anotherKey: ... */
-//         // },
-//         ReturnConsumedCapacity: 'TOTAL',
-//         ScanIndexForward: true,
-//         //Use
-//         //Select: 'ALL_ATTRIBUTES'
-//       };
 
       var params = {
-          TableName: "BBB02Raw",
-          ProjectionExpression: "payload",
-          KeyConditionExpression: "#Time = :time1",
-          ExpressionAttributeNames:{"#Time" : "Time"},
+          TableName: config.tableName,
+          ConsistentRead: true,
+          ProjectionExpression: "#Values",
+          //FilterExpression:'',
+          KeyConditionExpression: "#Id = :id AND #Time = :time",
+          ExpressionAttributeNames:{
+            "#Id" : "Id",
+            "#Time" : "Time",
+            "#Values" : "Values"
+          },
           ExpressionAttributeValues: {
-              ":time1": {"S":"1478855969936"}
+              ":id" : {"S": "ph-smart-001"},
+              ":time": {"S":"1478855920186"}
           }
       };
 
@@ -273,50 +156,27 @@ cognitoUser.authenticateUser(authenticationDetails, {
         if (err) console.log(err, err.stack); // an error occurred
         else     console.log(JSON.stringify(data));           // successful response
       });
+      //Using DynamoDB DOCUMENT SDK
+      var docClient = new AWS.DynamoDB.DocumentClient();
+      var params = {
+        TableName: config.tableName,
+        ProjectionExpression: "#Values",
+        KeyConditionExpression: "#Id = :id AND #Time = :time",
+        ExpressionAttributeNames:{
+          "#Id" : "Id",
+          "#Time" : "Time",
+          "#Values" : "Values"
+        },
+        ExpressionAttributeValues:{
+          ":id" : "ph-smart-001",
+          ":time": "1478855924383"
+        }
+      };
+      docClient.query(params, function(err, data){
+        if(err) console.log(err, err.stack);
+        else console.log(JSON.stringify(data));
+      });
 
-
-      // var params = {
-      //     TableName : "Music",
-      //     KeySchema: [
-      //         { AttributeName: "Artist", KeyType: "HASH" },  //Partition key
-      //         { AttributeName: "SongTitle", KeyType: "RANGE" }  //Sort key
-      //     ],
-      //     AttributeDefinitions: [
-      //         { AttributeName: "Artist", AttributeType: "S" },
-      //         { AttributeName: "SongTitle", AttributeType: "S" }
-      //     ],
-      //     ProvisionedThroughput: {
-      //         ReadCapacityUnits: 1,
-      //         WriteCapacityUnits: 1
-      //     }
-      // };
-      //
-      // dynamodb.createTable(params, function(err, data) {
-      //     if (err)
-      //         console.log(JSON.stringify(err, null, 2));
-      //     else
-      //         console.log(JSON.stringify(data, null, 2));
-      // });
-
-
-      //test GetItem
-      // var params = {
-      //   TableName: config.tableName,
-      //   Key: { // a map of attribute name to AttributeValue for all primary key attributes
-      //     attribute_name: { S: 'STRING_VALUE' }
-      //     // more attributes...
-      //   },
-      //   AttributesToGet: [ // optional (list of specific attribute names to return)
-      //     'payload',
-      //     // ... more attribute names ...
-      //   ],
-      //   ConsistentRead: false, // optional (true | false)
-      //   ReturnConsumedCapacity: 'TOTAL', // optional (NONE | TOTAL | INDEXES)
-      // };
-      // dynamodb.getItem(params, function(err, data) {
-      //   if (err) console.log(err); // an error occurred
-      //   else console.log(data); // successful response
-      // });
     },
     onFailure: function(err) {
         alert(err);
@@ -336,10 +196,10 @@ function listData(data){
   data.Items.forEach(function(item) {
       dateHour = JSON.stringify(item.Time.S);
       recentEventsDateTime.push(dateHour.slice(1, -4));
-      codData.push(item.payload.M.COD.N);
-      bodData.push(item.payload.M.BOD.N);
-      doData.push(item.payload.M.DO.N);
-      phData.push(item.payload.M.pH.N);
+      codData.push(item.Values.M.COD.N);
+      bodData.push(item.Values.M.BOD.N);
+      doData.push(item.Values.M.DO.N);
+      phData.push(item.Values.M.pH.N);
 
     });
     //Chart.js code

@@ -3,7 +3,7 @@ module.exports = {
   userPoolId: 'us-east-1_VeoguFTId',
   userPoolClientId: '1chjb36hpt7abtp6mso0q01449',
   IdentityPoolId: 'us-east-1:5e5c86f3-aa3f-4664-97b5-794bef0bf06d',
-  tableName: 'BBB02Raw',
+  tableName: 'BBB01Raw',
 
   username: 'quoclap',
   password: 'phuonghai123',

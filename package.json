@@ -6,7 +6,8 @@
   },
   "dependencies": {
     "amazon-cognito-identity-js": "^1.7.0",
-    "chart.js": "^2.3.0"
+    "chart.js": "^2.3.0",
+    "dynamodb-doc": "^1.0.0"
   },
   "scripts": {
     "build": "webpack"

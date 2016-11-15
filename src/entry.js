@@ -231,39 +231,53 @@ function listData(data){
     var ctx = document.getElementById("myChart").getContext("2d");
     var background = randomColor(0.5);
     var myChart = new Chart(ctx, {
-          type: 'line',
+          type: 'bar',
           data: {
             labels: recentEventsDateTime,
             datasets: [{
+                type: 'line',
                 label: "COD",
                 data:codData,
-                // backgroundColor = "rgba(255,0,0,0.3)",
-                fill: true,
+                backgroundColor: "rgba(250,0,0,0.8)",
+                borderColor: "rgba(250,0,0,0.8)",
+                fill: false,
                 //borderDash: [5, 5],
             }, {
+                type: 'line',
                 label: "BOD",
                 data: bodData,
+                borderColor: "rgba(0,250,0,0.3)",
                 fill: false,
-                borderDash: [5, 5],
+                //borderDash: [5, 5],
             }, {
+                //type: 'bar',
                 label: "DO",
                 data: doData,
+                borderColor: "rgba(0,0,255,0.3)",
+                backgroundColor: "rgba(150,200,0,0.3)",
                 //lineTension: 0,
                 fill: false,
             },{
+                //type: 'bar',
                 label: "Conductivity",
                 data: condData,
+                backgroundColor: "rgba(0,0,254,1)",
                 fill: false,
             },{
+                //type: 'bar',
                 label: "Temperature",
                 data: tempData,
+                backgroundColor: "rgba(250,0,0,0.3)",
                 fill: false,
             },{
+                //type: 'bar',
                 label: "Color",
                 data: colorData,
+                backgroundColor: "rgba(150,0,180,0.3)",
                 fill: false,
             },
             {
+                //type: 'bar',
                 label: "pH",
                 data: phData,
                 fill: false,

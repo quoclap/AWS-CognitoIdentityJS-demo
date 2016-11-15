@@ -261,7 +261,7 @@ function listData(data){
                 //type: 'bar',
                 label: "Conductivity",
                 data: condData,
-                backgroundColor: "rgba(0,0,254,1)",
+                backgroundColor: "rgba(0,0,254,0.6)",
                 fill: false,
             },{
                 //type: 'bar',

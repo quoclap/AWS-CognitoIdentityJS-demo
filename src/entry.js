@@ -6,6 +6,7 @@ var DOC = require('dynamodb-doc');
 //Lay thong so ngay thang
 //Generating a string of the last X hours back
 var ts = new Date().getTime();
+console.log(ts);
 var tsYesterday = (ts - (24 * 3600) * 1000);
 var d = new Date(tsYesterday);
 var yesterdayDateString = d.getFullYear() + '-'
@@ -121,60 +122,66 @@ cognitoUser.authenticateUser(authenticationDetails, {
 
       // Instantiate aws sdk service objects now that the credentials have been updated.
       var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10',region:'us-east-1'});
-      var params = {
-        TableName: config.tableName,
-        ReturnConsumedCapacity: 'TOTAL'
-        //Limit: 15
-      };
-      //scan all the table
-      dynamodb.scan(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else{
-          //console.log("Data: " + JSON.stringify(data));
-          listData(data);
-        }
-      });
+      //Scan all data in table
+      // var params = {
+      //   TableName: 'BBB03Raw',
+      //   ReturnConsumedCapacity: 'TOTAL'
+      //   //Limit: 15
+      // };
+      // //scan all the table
+      // dynamodb.scan(params, function(err, data) {
+      //   if (err) console.log(err, err.stack); // an error occurred
+      //   else{
+      //     //console.log("Data: " + JSON.stringify(data));
+      //     //listData(data);
+      //   }
+      // });
 
-      var params = {
-          TableName: config.tableName,
-          ConsistentRead: true,
-          ProjectionExpression: "#Values",
-          //FilterExpression:'',
-          KeyConditionExpression: "#Id = :id AND #Time = :time",
-          ExpressionAttributeNames:{
-            "#Id" : "Id",
-            "#Time" : "Time",
-            "#Values" : "Values"
-          },
-          ExpressionAttributeValues: {
-              ":id" : {"S": "ph-smart-001"},
-              ":time": {"S":"1478855920186"}
-          }
-      };
-
-      dynamodb.query(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else     console.log(JSON.stringify(data));           // successful response
-      });
+      // var params = {
+      //     TableName: 'BBB01Raw',
+      //     ConsistentRead: true,
+      //     ProjectionExpression: "#Values",
+      //     //FilterExpression:'',
+      //     KeyConditionExpression: "#Id = :id AND #Time = :time",
+      //     ExpressionAttributeNames:{
+      //       "#Id" : "Id",
+      //       "#Time" : "Time",
+      //       "#Values" : "Values"
+      //     },
+      //     ExpressionAttributeValues: {
+      //         ":id" : {"S": "ph-smart-001"},
+      //         ":time": {"S":"1478855920186"}
+      //     }
+      // };
+      //
+      // dynamodb.query(params, function(err, data) {
+      //   if (err) console.log(err, err.stack); // an error occurred
+      //   else     console.log(JSON.stringify(data));           // successful response
+      // });
       //Using DynamoDB DOCUMENT SDK
       var docClient = new AWS.DynamoDB.DocumentClient();
       var params = {
         TableName: config.tableName,
+        ScanIndexForward: false,
         ProjectionExpression: "#Values",
-        KeyConditionExpression: "#Id = :id AND #Time = :time",
+        KeyConditionExpression: "#Id = :id AND #Time <= :time",
         ExpressionAttributeNames:{
           "#Id" : "Id",
-          "#Time" : "Time",
+          "#Time" : "Timestamp",
           "#Values" : "Values"
         },
         ExpressionAttributeValues:{
           ":id" : "ph-smart-001",
-          ":time": "1478855924383"
-        }
+          ":time": ts
+        },
+        Limit: 15
       };
       docClient.query(params, function(err, data){
         if(err) console.log(err, err.stack);
-        else console.log(JSON.stringify(data));
+        else{
+          //console.log(JSON.stringify(data));
+          listData(data);
+        }
       });
 
     },
@@ -191,17 +198,24 @@ function listData(data){
   var bodData = [];
   var doData = [];
   var phData = [];
+  var colorData = [];
+  var condData = [];
+  var tempData = [];
   var dateHour;
   var cod;
   data.Items.forEach(function(item) {
-      dateHour = JSON.stringify(item.Time.S);
-      recentEventsDateTime.push(dateHour.slice(1, -4));
-      codData.push(item.Values.M.COD.N);
-      bodData.push(item.Values.M.BOD.N);
-      doData.push(item.Values.M.DO.N);
-      phData.push(item.Values.M.pH.N);
-
+      dateHour = JSON.stringify(item.Values.Time);
+      //recentEventsDateTime.push(dateHour.slice(1, -4));
+      recentEventsDateTime.push(item.Values.Time);
+      codData.push(item.Values.COD);
+      bodData.push(item.Values.BOD);
+      doData.push(item.Values.DO);
+      phData.push(item.Values.pH);
+      colorData.push(item.Values.Color);
+      condData.push(item.Values.Cond);
+      tempData.push(item.Values.Temp);
     });
+    console.log(phData);
     //Chart.js code
     //Create random values
     var randomScalingFactor = function() {
@@ -236,7 +250,20 @@ function listData(data){
                 data: doData,
                 //lineTension: 0,
                 fill: false,
-            }, {
+            },{
+                label: "Conductivity",
+                data: condData,
+                fill: false,
+            },{
+                label: "Temperature",
+                data: tempData,
+                fill: false,
+            },{
+                label: "Color",
+                data: colorData,
+                fill: false,
+            },
+            {
                 label: "pH",
                 data: phData,
                 fill: false,

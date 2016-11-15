@@ -1,0 +1,3 @@
+- Đưa các chương trình trong file entry.js vào một hàm trên Lambda nhằm đảm bảo tính đóng của chương trình.
+- Tạo layout cho web app gồm tất cả các function cần thiết. có thể tham khảo layout từ các nguồn khác.
+- Tạo các hàm Lambda cập nhật vào các database của ngày, tuần, tháng, năm với trigger source có thể là từ phía khách hàng, từ phía công ty, từ DynamoDB Stream.

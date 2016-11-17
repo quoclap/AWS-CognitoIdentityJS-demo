@@ -1,10 +1,10 @@
 module.exports = {
-  region: 'us-east-1',
-  userPoolId: 'us-east-1_VeoguFTId',
-  userPoolClientId: '1chjb36hpt7abtp6mso0q01449',
-  IdentityPoolId: 'us-east-1:5e5c86f3-aa3f-4664-97b5-794bef0bf06d',
-  tableName: 'BBB03Raw',
-
+  region: 'ap-northeast-1',
+  userPoolId: 'ap-northeast-1_laJ43mEoj',
+  userPoolClientId: '74obpvsu8n4g68t9nm459rkfk8',
+  IdentityPoolId: 'ap-northeast-1:047011cc-c8da-4284-9443-56064b6bf617',
+  tableName: 'Beagle01',
+  
   username: 'quoclap',
   password: 'phuonghai123',
   email: 'quoclap@phuonghai.com',

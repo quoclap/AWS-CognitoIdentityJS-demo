@@ -20,7 +20,7 @@ console.log("Datetime:" + yesterdayDateString);
 
 var config = require('./config.js')
 var AWS = require('aws-sdk');
-AWS.config.region = 'eu-east-1';
+AWS.config.region = 'ap-southeast-1';
 // var dynamodb = null;
 // Modules, e.g. Webpack:
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
@@ -112,16 +112,16 @@ var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
 cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function (result) {
       // /console.log('access token + ' + result.getAccessToken().getJwtToken());
-      AWS.config.region = 'us-east-1'; // Region
+      AWS.config.region = 'ap-northeast-1'; // Region
       AWS.config.credentials = new AWS.CognitoIdentityCredentials({
           IdentityPoolId : config.IdentityPoolId,
           Logins:{
-            'cognito-idp.us-east-1.amazonaws.com/us-east-1_VeoguFTId' : result.getIdToken().getJwtToken()
+            'cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_laJ43mEoj' : result.getIdToken().getJwtToken()
           }
       });
 
       // Instantiate aws sdk service objects now that the credentials have been updated.
-      var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10',region:'us-east-1'});
+      var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10',region:'ap-northeast-1'});
       //Scan all data in table
       // var params = {
       //   TableName: 'BBB03Raw',

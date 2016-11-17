@@ -14,7 +14,7 @@
     HashkeyValue: "${Id}"
     Payload field : "Values"
     Range key value: "Timestamp"
-    Role name : "IoTSingaporeToDynamo"
+    Role name : "AWSIoToDynamo"
 + In Cognito in Tokyo region, create a userPool
   Name: PhSmartUserPool
   -> Add an app
@@ -24,4 +24,4 @@
     Create name.
     In Authentication providers: using UserPoolId, userPoolClientId in Amazon app created above.
     Note : Authenticated role, go to IAM -> role, attach a policy that allows Cognito to access DynamoDB.
-    
+    Run the snippet code to register a User to Cognito, go to UserPool to confirm the user.

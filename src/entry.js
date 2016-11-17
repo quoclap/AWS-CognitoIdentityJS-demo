@@ -1,5 +1,5 @@
 console.log("Hello from entry.js");
-var Chart = require('../node_modules/chart.js/dist/Chart.bundle.js');
+var Chart = require('../node_modules/chart.js/src/chart.js');
 var AWS = require('aws-sdk');
 var DOC = require('dynamodb-doc');
 // var Chart = require('../node_modules/chart.js/dist/chart.js');
@@ -108,6 +108,8 @@ var userData = {
     Username : config.username,
     Pool : userPool
 };
+var dynamodb = null;//Tao bien toan cuc
+var docClient = null;
 var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
 cognitoUser.authenticateUser(authenticationDetails, {
     onSuccess: function (result) {
@@ -121,74 +123,50 @@ cognitoUser.authenticateUser(authenticationDetails, {
       });
 
       // Instantiate aws sdk service objects now that the credentials have been updated.
-      var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10',region:'ap-northeast-1'});
-      //Scan all data in table
-      // var params = {
-      //   TableName: 'BBB03Raw',
-      //   ReturnConsumedCapacity: 'TOTAL'
-      //   //Limit: 15
-      // };
-      // //scan all the table
-      // dynamodb.scan(params, function(err, data) {
-      //   if (err) console.log(err, err.stack); // an error occurred
+      // dynamodb = new AWS.DynamoDB({apiVersion:'2012-08-10',region:'ap-northeast-1'});
+
+      //Using DynamoDB DOCUMENT SDK
+      docClient = new AWS.DynamoDB.DocumentClient();
+
+      // docClient.query(params, function(err, data){
+      //   if(err) console.log(err, err.stack);
       //   else{
-      //     //console.log("Data: " + JSON.stringify(data));
-      //     //listData(data);
+      //     //console.log(JSON.stringify(data));
+      //     listData(data);
       //   }
       // });
-
-      // var params = {
-      //     TableName: 'BBB01Raw',
-      //     ConsistentRead: true,
-      //     ProjectionExpression: "#Values",
-      //     //FilterExpression:'',
-      //     KeyConditionExpression: "#Id = :id AND #Time = :time",
-      //     ExpressionAttributeNames:{
-      //       "#Id" : "Id",
-      //       "#Time" : "Time",
-      //       "#Values" : "Values"
-      //     },
-      //     ExpressionAttributeValues: {
-      //         ":id" : {"S": "ph-smart-001"},
-      //         ":time": {"S":"1478855920186"}
-      //     }
-      // };
-      //
-      // dynamodb.query(params, function(err, data) {
-      //   if (err) console.log(err, err.stack); // an error occurred
-      //   else     console.log(JSON.stringify(data));           // successful response
-      // });
-      //Using DynamoDB DOCUMENT SDK
-      var docClient = new AWS.DynamoDB.DocumentClient();
-      var params = {
-        TableName: config.tableName,
-        ScanIndexForward: false,
-        ProjectionExpression: "#Values",
-        KeyConditionExpression: "#Id = :id AND #Time <= :time",
-        ExpressionAttributeNames:{
-          "#Id" : "Id",
-          "#Time" : "Timestamp",
-          "#Values" : "Values"
-        },
-        ExpressionAttributeValues:{
-          ":id" : "ph-smart-001",
-          ":time": ts
-        },
-        Limit: 15
-      };
-      docClient.query(params, function(err, data){
-        if(err) console.log(err, err.stack);
-        else{
-          //console.log(JSON.stringify(data));
-          listData(data);
-        }
-      });
-
+      queryDatabase();
+      setInterval(queryDatabase,300000);
     },
     onFailure: function(err) {
         alert(err);
     }
 });
+
+function queryDatabase(){
+  var params = {
+    TableName: config.tableName,
+    ScanIndexForward: false,
+    ProjectionExpression: "#Values",
+    KeyConditionExpression: "#Id = :id AND #Time <= :time",
+    ExpressionAttributeNames:{
+      "#Id" : "Id",
+      "#Time" : "Timestamp",
+      "#Values" : "Values"
+    },
+    ExpressionAttributeValues:{
+      ":id" : "ph-smart-001",
+      ":time": ts
+    },
+    Limit: 15,
+    ReturnConsumedCapacity: 'TOTAL'
+  };
+  docClient.query(params,function(err, data){
+    if(err) console.log(err, err.stack);
+    else listData(data);
+  });
+
+}
 
 function listData(data){
   //console.log("Data: " + JSON.stringify(data));
@@ -215,7 +193,6 @@ function listData(data){
       condData.push(item.Values.Cond);
       tempData.push(item.Values.Temp);
     });
-    console.log(phData);
     //Chart.js code
     //Create random values
     var randomScalingFactor = function() {

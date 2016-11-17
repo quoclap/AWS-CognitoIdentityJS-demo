@@ -118,7 +118,7 @@ cognitoUser.authenticateUser(authenticationDetails, {
       AWS.config.credentials = new AWS.CognitoIdentityCredentials({
           IdentityPoolId : config.IdentityPoolId,
           Logins:{
-            'cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_laJ43mEoj' : result.getIdToken().getJwtToken()
+            config.login : result.getIdToken().getJwtToken()
           }
       });
 
@@ -144,6 +144,7 @@ cognitoUser.authenticateUser(authenticationDetails, {
 });
 
 function queryDatabase(){
+  ts = new Date().getTime();
   var params = {
     TableName: config.tableName,
     ScanIndexForward: false,
@@ -260,28 +261,7 @@ function listData(data){
                 fill: false,
             }]
         },
-          //   datasets : [{
-          //     label: 'COD',
-          //     backgroundColor = background,
-          //     borderColor = randomColor(0.6),
-          //     pointBorderColor = randomColor(0.2),
-          //     pointBackgroundColor = randomColor(0.3),
-          //     pointBorderWidth = 1,
-          //     fill: true,
-          //     data:codData
-          //   },
-          //   {
-          //     label: "BOD",
-          //     data:bodData,
-          //     // backgroundColor = randomColor(0.5),
-          //     // borderColor = randomColor(0.6),
-          //     // pointBorderColor = randomColor(0.2),
-          //     // pointBackgroundColor = randomColor(0.3),
-          //     pointBorderWidth = 1,
-          //     fill: true,
-          //   }]
-          // },
-          options: {
+        options: {
             responsive: true,
             scales: {
                 xAxes: [{

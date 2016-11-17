@@ -4,4 +4,5 @@
   + Last 24h: thực hiện lấy trung bình của các giá trị trong mỗi giờ. sau đó lưu vào một table khác, các lệnh lấy dữ liệu trong 24 h qua được thực hiện trên database này.
   + Last week: tương tự như last 24h
   + Khách hàng có thể chọn khoảng thời gian cụ thể. Trong trường hợp này ta có thể để cho khách hàng lựa chọn database vì mỗi DB có khoảng thời gian giữa các item là khác nhau, database raw thì mới có đủ nhất dữ liệu thô từ gateway gửi lên. còn các database khác thì chỉ là các dữ liệu trung bình mà thôi.
+  md
   

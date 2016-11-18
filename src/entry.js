@@ -118,23 +118,12 @@ cognitoUser.authenticateUser(authenticationDetails, {
       AWS.config.credentials = new AWS.CognitoIdentityCredentials({
           IdentityPoolId : config.IdentityPoolId,
           Logins:{
-            config.login : result.getIdToken().getJwtToken()
+            'cognito-idp.ap-northeast-1.amazonaws.com/ap-northeast-1_laJ43mEoj' : result.getIdToken().getJwtToken()
           }
       });
 
-      // Instantiate aws sdk service objects now that the credentials have been updated.
-      // dynamodb = new AWS.DynamoDB({apiVersion:'2012-08-10',region:'ap-northeast-1'});
-
       //Using DynamoDB DOCUMENT SDK
       docClient = new AWS.DynamoDB.DocumentClient();
-
-      // docClient.query(params, function(err, data){
-      //   if(err) console.log(err, err.stack);
-      //   else{
-      //     //console.log(JSON.stringify(data));
-      //     listData(data);
-      //   }
-      // });
       queryDatabase();
       setInterval(queryDatabase,300000);
     },

@@ -1,7 +1,13 @@
-p {
+p.important {
 	font-family: "Times New Roman", Times, serif;
+	font-size: 1.5em;
+	font-weight: 100;
+	color: #48e052;
+	padding: .1em
 }
 
 h1 {
 	font-family: Georgia, "Times New Roman", Times, serif;
+	text-align: center;
 }
+

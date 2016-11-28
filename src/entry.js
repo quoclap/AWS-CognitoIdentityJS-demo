@@ -19,7 +19,6 @@ console.log("Datetime:" + yesterdayDateString);
 
 
 var config = require('./config.js')
-var AWS = require('aws-sdk');
 AWS.config.region = 'ap-southeast-1';
 // var dynamodb = null;
 // Modules, e.g. Webpack:

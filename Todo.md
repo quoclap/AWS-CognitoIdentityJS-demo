@@ -7,4 +7,3 @@
 - Tạo cơ chế phản hồi từ khách hàng: khách hàng có thể gửi về công ty các yêu cầu tuỳ biến về hệ thống cũng như giao diện, về phía công ty có thể đưa ra trước các example để khách hàng dựa vào đó để có những đề xuất chỉnh sửa, muốn có nhiều ý kiến phản hồi nâng cao chất lượng sản phẩm và dịch vụ thì cũng nên đầu tư thời gian tạo ra nhiều example cho mỗi đối tượng khách hàng.
 - Tạo cơ chế lưu cookies của mỗi senssion , User mỗi lần đăng nhâp vô app sẽ được lưu các thông tin tạm thời về username password, token...
 - Thêm repo này vào redmine trong EC2 instance trên AWS
-- Test chuc nang tu dong cap nhat repo
